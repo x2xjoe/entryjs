@@ -97,6 +97,11 @@ class Scope {
 
             if (executorValueMap[blockId] === 'isPending') {
                 throw new Entry.Utils.AsyncError();
+            } else if (
+                executorValueMap[blockId] &&
+                executorValueMap[blockId].name === 'IncompatibleError'
+            ) {
+                throw executorValueMap[blockId];
             } else if (executorValueMap[blockId] !== undefined) {
                 return executorValueMap[blockId];
             }

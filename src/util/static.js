@@ -85,6 +85,9 @@ Entry.STATIC = {
         objectRemoveExpansionBlocks: 219,
         objectReorder: 220,
 
+        objectAddAIUtilizeBlocks: 221,
+        objectRemoveAIUtilizeBlocks: 222,
+
         do: 301,
         undo: 302,
         redo: 303,
@@ -169,6 +172,9 @@ Entry.STATIC = {
 
         playgroundClickAddExpansionBlock: 1101,
         playgroundClickAddExpansionBlockCancel: 1102,
+
+        playgroundClickAddAIUtilizeBlock: 1103,
+        playgroundClickAddAIUtilizeBlockCancel: 1104,
     },
 
     RECORDABLE: {

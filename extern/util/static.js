@@ -383,7 +383,21 @@ EntryStatic.getAllBlocks = function() {
                 'get_value_from_table',
                 'calc_values_from_table',
                 'open_table_chart',
-                'close_table_chart',
+                'close_table_chart'
+        },
+        {
+            category: 'ai_utilize',
+            blocks: [
+                'aiUtilizeBlockAddButton',
+                'aiUtilizeModelTrainButton',
+                'audio_title',
+                'check_microphone',
+                'speech_to_text',
+                'get_microphone_volume',
+                'tts_title',
+                'read_text',
+                'read_text_wait_with_block',
+                'set_tts_property',
             ],
         },
         {
@@ -413,10 +427,6 @@ EntryStatic.getAllBlocks = function() {
                 'behaviorConductLifeSafety_title',
                 'count_lifeSafety_behavior',
                 'get_lifeSafety_behavior',
-                'tts_title',
-                'read_text',
-                'read_text_wait_with_block',
-                'set_tts_property',
             ],
         },
         {
@@ -796,6 +806,7 @@ EntryStatic.colorSet = {
             VARIABLE: '#CE38CE',
             HARDWARE: '#FFFFFF',
             EXPANSION: '#FF8888',
+            AI_UTILIZE: '#FF8888',
             HIDDEN: '#FFFFFF',
         },
     },
@@ -815,6 +826,7 @@ EntryStatic.colorSet = {
             FUNC: '#de5c04',
             HARDWARE: '#00b6b1',
             EXPANSION: '#ef6d6d',
+            AI_UTILIZE: '#8222ff',
             HIDDEN: '#8aa3b2',
         },
         lighten: {
@@ -832,6 +844,7 @@ EntryStatic.colorSet = {
             FUNC: '#ff7b22',
             HARDWARE: '#78d5d3',
             EXPANSION: '#ffaeae',
+            AI_UTILIZE: '#ffaeae',
             HIDDEN: '#ffaeae',
         },
         darken: {
@@ -849,6 +862,7 @@ EntryStatic.colorSet = {
             FUNC: '#a14100',
             HARDWARE: '#008380',
             EXPANSION: '#c63f3f',
+            AI_UTILIZE: '#670bdd',
             HIDDEN: '#728997',
         },
         emphasize: {
@@ -874,6 +888,8 @@ EntryStatic.colorSet = {
         BUTTON: '#4f80ff',
         BUTTON_BACKGROUND: '#eee',
         TEXT: '#333',
+        BUTTON_BACKGROUND_DISABLED: '#f9f9f9',
+        BUTTON_DISABLED: '#cbcbcb',
     },
 };
 

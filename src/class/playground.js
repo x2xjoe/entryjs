@@ -584,6 +584,7 @@ Entry.Playground = class Playground {
         this.blockMenu.banClass('checker');
         // this.banExpansionBlock();
         Entry.expansion.banAllExpansionBlock();
+        Entry.aiUtilize.banAllAIUtilizeBlock();
         this.vimBoard = this.mainWorkspace.vimBoard;
 
         this._destroyer.add(this.mainWorkspace);
@@ -1535,6 +1536,13 @@ Entry.Playground = class Playground {
         Entry.expansion.banExpansionBlocks(items.map(({ name }) => name));
     }
 
+    addAIUtilizeBlocks(items) {
+        Entry.aiUtilize.addAIUtilizeBlocks(items.map(({ name }) => name));
+    }
+
+    removeAIUtilizeBlocks(items) {
+        Entry.aiUtilize.banAIUtilizeBlocks(items.map(({ name }) => name));
+    }
 
     /**
      * Add sound
@@ -2122,6 +2130,7 @@ Entry.Playground = class Playground {
                 thumbnailView.removeClass('entryPlaygroundSoundPlay');
                 thumbnailView.addClass('entryPlaygroundSoundStop');
                 soundInstance = Entry.Utils.playSound(sound.id);
+                Entry.Utils.addSoundInstances(soundInstance);
             }
 
             soundInstance.addEventListener('complete', () => {
@@ -2173,6 +2182,7 @@ Entry.Playground = class Playground {
         removeButton.appendTo(element).innerText = delText;
         removeButton.bindOnClick(() => {
             try {
+                Entry.Utils.forceStopSounds();
                 const result = Entry.do('objectRemoveSound', Entry.playground.object.id, sound);
                 if (result) {
                     Entry.dispatchEvent('removeSound', sound);
@@ -2328,6 +2338,18 @@ Entry.Playground = class Playground {
         }
 
         Object.values(Entry.EXPANSION_BLOCK_LIST).forEach((block) => {
+            blockMenu.banClass(block.name, true);
+            blockMenu.banClass(`${block.name}_legacy`, true);
+        });
+    }
+
+    banAIUtilizeBlock() {
+        const blockMenu = _.result(this.mainWorkspace, 'blockMenu');
+        if (!blockMenu) {
+            return;
+        }
+
+        Object.values(Entry.AI_UTILIZE_BLOCK_LIST).forEach((block) => {
             blockMenu.banClass(block.name, true);
             blockMenu.banClass(`${block.name}_legacy`, true);
         });
