@@ -383,7 +383,8 @@ EntryStatic.getAllBlocks = function() {
                 'get_value_from_table',
                 'calc_values_from_table',
                 'open_table_chart',
-                'close_table_chart'
+                'close_table_chart',
+            ]
         },
         {
             category: 'ai_utilize',
