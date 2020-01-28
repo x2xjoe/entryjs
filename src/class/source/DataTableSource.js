@@ -1,5 +1,6 @@
 import { dmetTable } from '../../extensions/dmet';
 import CloudVariable from '../../extensions/CloudVariable';
+import _throttle from 'lodash/throttle';
 
 class DataTableSource {
     #id;
@@ -11,6 +12,7 @@ class DataTableSource {
     #chart = [];
     #cloudVariable = CloudVariable.getInstance();
     #source;
+    modal;
     constructor(source = {}) {
         const { name, id = Entry.generateHash(), object = null, chart, data } = source;
         this.#name = name;
@@ -18,10 +20,29 @@ class DataTableSource {
         this.#object = object;
         this.#source = source;
         this.#data = new dmetTable(source);
-        this.#chart = chart;
+        this.#chart = chart || [];
         // 정지시 data 초기화.
         Entry.addEventListener('stop', () => {
             this.#data.from({ ...source, data: this.#data.origin });
+        });
+
+        const apply = () => {
+            if (this.modal && this.modal.isShow) {
+                this.modal.setData({
+                    source: {
+                        chart: this.chart,
+                        fields: this.fields,
+                        origin: this.rows,
+                    },
+                });
+            }
+        };
+        this.applyChart = _throttle(apply, 1000);
+    }
+
+    get rows() {
+        return this.array.map(({ value }) => {
+            return value;
         });
     }
 
@@ -46,6 +67,14 @@ class DataTableSource {
         return array;
     }
 
+    get chart() {
+        return this.#chart;
+    }
+
+    get origin() {
+        return this.#data.origin;
+    }
+
     setArray({ chart, ...data }) {
         this.#chart = chart;
         this.#source = { ...this.#source, ...data };
@@ -67,6 +96,7 @@ class DataTableSource {
                 const appendOp = this.#data.getOperation({ type: 'append', index, data });
                 this.#data.exec(appendOp);
                 resolve();
+                this.applyChart();
             } catch (e) {
                 reject(e);
             }
@@ -78,6 +108,8 @@ class DataTableSource {
             try {
                 const deleteOp = this.#data.getOperation({ type: 'delete', index });
                 this.#data.exec(deleteOp);
+                resolve();
+                this.applyChart();
             } catch (e) {
                 reject(e);
             }
@@ -89,6 +121,8 @@ class DataTableSource {
             try {
                 const insertOp = this.#data.getOperation({ type: 'insert', index, data });
                 this.#data.exec(insertOp);
+                resolve();
+                this.applyChart();
             } catch (e) {
                 reject(e);
             }
@@ -100,6 +134,8 @@ class DataTableSource {
             try {
                 const replaceOp = this.#data.getOperation({ type: 'replace', index, data });
                 this.#data.exec(replaceOp);
+                resolve();
+                this.applyChart();
             } catch (e) {
                 reject(e);
             }

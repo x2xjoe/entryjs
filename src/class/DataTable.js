@@ -2,12 +2,14 @@ import { DataAnalytics } from '@entrylabs/tool';
 import _find from 'lodash/find';
 import _findIndex from 'lodash/findIndex';
 import DataTableSource from './source/DataTableSource';
+import { ModalChart } from '@entrylabs/tool';
 
 class DataTable {
     #tables = [];
     #view;
+    modal;
 
-    constructor(view) {
+    set view(view) {
         this.#view = view;
         this.#generateView();
     }
@@ -68,6 +70,46 @@ class DataTable {
             this.addSource(table);
         });
     }
+
+    showChart(tableId) {
+        this.closeChart();
+        const source = this.getSource(tableId);
+        if (!source.modal) {
+            source.modal = this.createChart(source);
+        }
+        source.modal.show();
+        this.modal = source.modal;
+    }
+
+    closeChart() {
+        if (this.modal && this.modal.isShow) {
+            this.modal.hide();
+        }
+    }
+
+    createChart(source) {
+        const tables = this.#tables.map(({ id, name }) => ([name, id]));
+        const container = Entry.Dom('div', {
+            class: 'entry-table-chart',
+            parent: $('body'),
+        })[0];
+        return new ModalChart({
+            data: {
+                tables,
+                source,
+                setTable: (selected) => {
+                    const [tableName, tableId] = selected;
+                    this.showChart(tableId);
+                },
+            },
+            container,
+        });
+    }
+
+    clear() {
+        this.#tables = [];
+        this.modal = null;
+    }
 }
 
-export default DataTable;
+export default new DataTable();
