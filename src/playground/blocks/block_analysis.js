@@ -377,7 +377,7 @@ module.exports = {
                     PROPERTY: 1,
                 },
                 class: 'analysis',
-                isNotFor: [],
+                isNotFor: ['analysis'],
                 func(sprite, script) {
                     const tableId = script.getField('MATRIX', script);
                     const property = script.getField('PROPERTY', script);
@@ -449,7 +449,7 @@ module.exports = {
                     COL: 2,
                 },
                 class: 'analysis',
-                isNotFor: [],
+                isNotFor: ['analysis'],
                 func(sprite, script) {
                     const tableId = script.getField('MATRIX', script);
                     const row = script.getNumberValue('ROW', script);
@@ -523,7 +523,7 @@ module.exports = {
                     CALC: 2,
                 },
                 class: 'analysis',
-                isNotFor: [],
+                isNotFor: ['analysis'],
                 func(sprite, script) {
                     const tableId = script.getField('MATRIX', script);
                     const calc = script.getField('CALC', script);

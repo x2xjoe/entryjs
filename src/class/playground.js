@@ -583,6 +583,7 @@ Entry.Playground = class Playground {
         this.blockMenu.banClass('checker');
         // this.banExpansionBlock();
         Entry.expansion.banAllExpansionBlock();
+        DataTable.banAllBlock();
         this.vimBoard = this.mainWorkspace.vimBoard;
 
         this._destroyer.add(this.mainWorkspace);
