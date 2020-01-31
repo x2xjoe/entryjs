@@ -584,6 +584,7 @@ Entry.Playground = class Playground {
         // this.banExpansionBlock();
         Entry.expansion.banAllExpansionBlock();
         Entry.aiUtilize.banAllAIUtilizeBlock();
+        DataTable.banAllBlock();
         this.vimBoard = this.mainWorkspace.vimBoard;
 
         this._destroyer.add(this.mainWorkspace);
@@ -1378,9 +1379,9 @@ Entry.Playground = class Playground {
     }
 
     selectTable(table) {
-        const {tables} = this.dataTable;
-        tables.forEach(({view, id}) => {
-            if(id === table.id) {
+        const { tables } = this.dataTable;
+        tables.forEach(({ view, id }) => {
+            if (id === table.id) {
                 view.addClass('entryTableSelected');
             } else {
                 view.removeClass('entryTableSelected');
