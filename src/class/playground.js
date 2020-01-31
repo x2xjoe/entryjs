@@ -659,10 +659,18 @@ Entry.Playground = class Playground {
     }
 
     updateTableView() {
+        const items = this._getSortableTableList();
+
         if (this.tableSortableListWidget) {
             this.tableSortableListWidget.setData({
-                items: this._getSortableTableList(),
+                items,
             });
+        }
+
+        if (items.length) {
+            this.hideTableCurtain();
+        } else {
+            this.showTableCurtain();
         }
     }
 
@@ -706,10 +714,21 @@ Entry.Playground = class Playground {
             .addClass('entryPlaygroundTableList')
             .appendTo(tableView);
 
-        const tableDom = Entry.createElement('div', 'dataTable')
+        const tableDom = Entry.createElement('div', 'dataTableEditor')
             .addClass('entryPlaygroundTable')
             .appendTo(tableView);
         DataTable.view = tableDom;
+
+        const tableCurtainView = Entry.createElement('div', 'entryTableCurtain')
+            .addClass('entryPlaygroundTableCurtainWorkspace entryRemove')
+            .appendTo(tableDom);
+        this.tableCurtainView_ = tableCurtainView;
+
+        const tableCurtainText = Entry.createElement('span', 'entryTableCurtainText')
+            .addClass('entryPlaygroundTableCurtainWorkspaceText')
+            .appendTo(tableCurtainView);
+        tableCurtainText.innerHTML = Lang.Workspace.add_table_before_edit;
+
         this.dataTable = DataTable;
     }
 
@@ -1378,9 +1397,9 @@ Entry.Playground = class Playground {
     }
 
     selectTable(table) {
-        const {tables} = this.dataTable;
-        tables.forEach(({view, id}) => {
-            if(id === table.id) {
+        const { tables } = this.dataTable;
+        tables.forEach(({ view, id }) => {
+            if (id === table.id) {
                 view.addClass('entryTableSelected');
             } else {
                 view.removeClass('entryTableSelected');
@@ -1534,7 +1553,6 @@ Entry.Playground = class Playground {
     removeExpansionBlocks(items) {
         Entry.expansion.banExpansionBlocks(items.map(({ name }) => name));
     }
-
 
     /**
      * Add sound
@@ -2387,6 +2405,14 @@ Entry.Playground = class Playground {
 
     hidePictureCurtain() {
         this.pictureCurtainView_ && this.pictureCurtainView_.addClass('entryRemove');
+    }
+
+    showTableCurtain() {
+        this.tableCurtainView_ && this.tableCurtainView_.removeClass('entryRemove');
+    }
+
+    hideTableCurtain() {
+        this.tableCurtainView_ && this.tableCurtainView_.addClass('entryRemove');
     }
 
     hideBlockMenu() {
