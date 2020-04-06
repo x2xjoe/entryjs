@@ -122,7 +122,6 @@ class VideoUtils implements MediaUtilsInterface {
             return;
         }
         await this.compatabilityChecker();
-        this.isInitialized = true;
 
         // 움직임 감지를 위한 실제 렌더되지 않는 돔
         if (!this.inMemoryCanvas) {
@@ -154,9 +153,7 @@ class VideoUtils implements MediaUtilsInterface {
                 width: this.CANVAS_WIDTH,
                 height: this.CANVAS_HEIGHT,
             });
-            const [track] = stream.getVideoTracks();
-            this.imageCapture = new ImageCapture(track);
-            this.sendImageToWorker();
+
             const video = document.createElement('video');
             video.srcObject = stream;
             video.width = this.CANVAS_WIDTH;
@@ -166,6 +163,7 @@ class VideoUtils implements MediaUtilsInterface {
             this.stream = stream;
             this.canvasVideo = GEHelper.getVideoElement(video);
             this.video = video;
+            this.isInitialized = true;
         } catch (err) {
             console.log(err);
             this.isInitialized = false;
@@ -173,14 +171,9 @@ class VideoUtils implements MediaUtilsInterface {
     }
 
     videoOnLoadHandler() {
-        Entry.addEventListener('beforeStop', this.reset.bind(this));
-        this.video.play();
-        this.startDrawIndicators();
         Entry.dispatchEvent('showVideoLoadingScreen');
-        GEHelper.drawDetectedGraphic();
-        if (!this.flipStatus.horizontal) {
-            this.setOptions('hflip', null);
-        }
+        console.time();
+
         this.worker.onmessage = (e: { data: { type: String; message: any } }) => {
             const { type, message } = e.data;
             if (Entry.engine.state !== 'run' && type !== 'init') {
@@ -190,9 +183,26 @@ class VideoUtils implements MediaUtilsInterface {
                 case 'init':
                     const name: 'pose' | 'face' | 'object' | 'warmup' = message;
                     if (message === 'warmup') {
+                        console.timeEnd();
+
+                        Entry.addEventListener('beforeStop', this.reset.bind(this));
+                        this.video.play();
+
+                        if (!this.flipStatus.horizontal) {
+                            this.setOptions('hflip', null);
+                        }
                         Entry.dispatchEvent('hideLoadingScreen');
+                        GEHelper.drawDetectedGraphic();
+
+                        const [track] = this.stream.getVideoTracks();
+                        this.imageCapture = new ImageCapture(track);
+                        this.sendImageToWorker();
+
+                        this.motionDetect(null);
+                        this.startDrawIndicators();
                     }
                     this.modelLoadStatus[name] = true;
+
                     break;
                 case 'face':
                     this.faces = message;
@@ -205,7 +215,6 @@ class VideoUtils implements MediaUtilsInterface {
                     break;
             }
         };
-        this.motionDetect(null);
     }
     startDrawIndicators() {
         if (this.objects && this.indicatorStatus.object) {
@@ -239,6 +248,7 @@ class VideoUtils implements MediaUtilsInterface {
         // //motion test
         requestAnimationFrame(this.sendImageToWorker.bind(this));
     }
+
     /**
      * MOTION DETECT CALCULATION BASED ON COMPUTER VISION
      * @param sprite Entry Entity Object
@@ -279,6 +289,7 @@ class VideoUtils implements MediaUtilsInterface {
         const context = this.inMemoryCanvas.getContext('2d');
         context.clearRect(0, 0, this.inMemoryCanvas.width, this.inMemoryCanvas.height);
         context.drawImage(this.video, 0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT);
+
         const imageData = context.getImageData(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT);
         const data = imageData.data;
 
