@@ -172,7 +172,7 @@ class VideoUtils implements MediaUtilsInterface {
 
     videoOnLoadHandler() {
         Entry.dispatchEvent('showVideoLoadingScreen');
-        console.time();
+        console.time('video block');
 
         this.worker.onmessage = (e: { data: { type: String; message: any } }) => {
             const { type, message } = e.data;
@@ -183,7 +183,7 @@ class VideoUtils implements MediaUtilsInterface {
                 case 'init':
                     const name: 'pose' | 'face' | 'object' | 'warmup' = message;
                     if (message === 'warmup') {
-                        console.timeEnd();
+                        console.timeEnd('video block');
 
                         Entry.addEventListener('beforeStop', this.reset.bind(this));
                         this.video.play();
